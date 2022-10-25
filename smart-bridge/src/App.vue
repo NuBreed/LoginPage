@@ -1,5 +1,6 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, reactive } from 'vue'
+const authUsers = reactive([{ login: 'Admin' }, { login: 'mmwhh' }])
 const username = ref(null)
 const email = ref('')
 const password = ref('')
@@ -20,14 +21,13 @@ const showPassword = () => {
   }
 }
 const submitHandler = () => {
-  if (
-    !email.value ||
-    !password.value ||
-    (email.value != 'Admin' && password.value != 'Admin')
-  ) {
+  if (!email.value || !password.value) {
     error.value = !error.value
+  }
+  const auth = authUsers.find(({ login }) => login === email.value)
+  if (!auth && password != 'Admin') {
   } else {
-    welcome.value = `Welcome ${email.value}`
+    console.log('You are welcome')
     //normally we post the details to be backend here using axios or fetch API
   }
   email.value = ''
@@ -38,67 +38,87 @@ const handleError = () => {
   error.value = false
 }
 </script>
+<script>
+export default {
+  data() {
+    return {}
+  },
+}
+</script>
 <template>
-  <main class="main">
-    <header class="header">
-      <div class="logo">
-        <img src="./assets/smartBRIDGE_HH_Logo_pos.png" alt="" />
+  <main class="app">
+    <header class="app_header">
+      <div class="app_header_logo">
+        <img
+          src="./assets/smartBRIDGE_HH_Logo_pos.png"
+          alt=""
+          class="app_header_logo_img"
+        />
       </div>
     </header>
-    <section class="center">
-      <div class="form-info">
-        <h4>
+    <section class="app_center">
+      <div class="app_center_header">
+        <h4 class="app_center_heading">
           Login to your <br />
           smartBRIDGE account
         </h4>
       </div>
-      <div class="form-wrapper">
-        <form class="div">
-          <fieldset class="inputBox" :class="[error ? 'alert' : '']">
+      <div class="app_center_content">
+        <form>
+          <fieldset
+            class="app_center_content_wrapper"
+            :class="[error ? 'app_center_content_alert' : '']"
+          >
             <input
               type="email"
               placeholder="E-mail"
               v-model="email"
               novalidate
               ref="username"
+              class="app_center_content_wrapper_input"
             />
-            <div class="icon-wrapper"></div>
+            <div class="app_center_content_icon-wrapper"></div>
           </fieldset>
-          <fieldset class="inputBox" :class="error ? 'alert' : ''">
+          <fieldset
+            class="app_center_content_wrapper"
+            :class="error ? 'app_center_content_alert' : ''"
+          >
             <input
               :type="passwordType"
               placeholder="password"
               v-model="password"
+              class="app_center_content_wrapper_input"
             />
-            <div class="icon-wrapper">
+            <div class="app_center_content_icon-wrapper">
               <font-awesome-icon
                 :icon="icon"
                 @click="showPassword"
-                class="password-icon"
+                class="app_center_content_icon-wrapper_icon"
               />
             </div>
           </fieldset>
-          <button class="submit-btn" @click.prevent="submitHandler">
+          <button
+            class="app_center_content_submit_btn"
+            @click.prevent="submitHandler"
+          >
             Login
           </button>
         </form>
       </div>
-      <div class="error" v-if="error">
-        <span class="icon">
-          <font-awesome-icon
-            icon="fa-regular fa-circle-xmark"
-            @click="handleError"
-            class="icon"
-          />
-        </span>
-        <p>Invalid Username or Password</p>
+      <div class="app_center_error" v-if="error">
+        <font-awesome-icon
+          icon="fa-regular fa-circle-xmark"
+          @click="handleError"
+          class="app_center_error_icon"
+        />
+        <p class="app_center_error_text">Invalid Username or Password</p>
       </div>
-      <div class="password-reset">
-        <a href="#">Forget Password ?</a>
+      <div class="app_center_password_reset">
+        <a href="#" class="app_center_password_reset_link">Forget Password ?</a>
       </div>
-      <div class="form-footer">
+      <div class="app_center_form_footer">
         <h5>Are you new to smartBRIDGE</h5>
-        <a href="#" class="register-link"> Register</a>
+        <a href="#" class="app_center_form_footer_register-link"> Register</a>
       </div>
     </section>
   </main>
